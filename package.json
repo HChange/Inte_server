@@ -1,0 +1,16 @@
+{
+  "name": "inte-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@alicloud/sms-sdk": "^1.1.6",
+    "connect-mongodb-session": "^2.3.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "mongoose": "^5.9.9"
+  },
+  "devDependencies": {
+    "colors": "^1.4.0"
+  }
+}
