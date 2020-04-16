@@ -11,7 +11,7 @@ router.post('/login', userCtrl.login)
 router.post('/register', userCtrl.register);
 
 // 修改密码
-// router.post("/change_password", userCtrl.changePassword);
+router.post("/change_password", userCtrl.changePassword);
 // 验证码
 // router.get('/send_code', userCtrl.emailVerify);
 router.get('/send_code', userCtrl.telVerify);

@@ -6,5 +6,5 @@ module.exports = {
   /**session的id*/
   SESSIONID: "session_id",
   /**保存时间 */
-  MAXAGE: 5 * 60 * 60,
+  MAXAGE: 30 * 24 * 60 * 60000,
 };

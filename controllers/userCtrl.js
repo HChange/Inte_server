@@ -1,32 +1,33 @@
 // 引入用户表操作对象
 const User = require("../model/userTable");
-
+const sendCode = require("../utils/sendCode");
 const login = async (req, res, next) => {
-  const { phone, password } = req.body;
+  const { telephone, password } = req.body;
 
-  var exist = await User.findByPhone(phone);
+  var exist = await User.findByPhone(telephone);
 
   if (!exist) {
     res.json({
       code: -2,
-      msg: "用户名不存在",
-      data: {},
+      msg: "该手机号未注册过Inte账号",
+      data: null,
     });
   } else {
-    User.findByPhoneAndPsd(phone, password)
+    User.findByPhoneAndPsd(telephone, password)
       .then((result) => {
         if (result) {
           req.session.userInfo = result;
+          const deletePassword = { ...result._doc, password: "********" };
           res.json({
             code: 0,
             msg: "登录成功",
-            data: {},
+            data: { data: deletePassword },
           });
         } else {
           res.json({
             code: -1,
-            msg: "账号或密码不正确",
-            data: {},
+            msg: "账号或密码输入不正确",
+            data: null,
           });
         }
       })
@@ -35,25 +36,39 @@ const login = async (req, res, next) => {
         res.json({
           code: -3,
           msg: error.message,
-          data: {},
+          data: null,
         });
       });
   }
 };
 
+/**验证手机身份 */
 var telVerify = async (req, res, next) => {
-  var { phone } = req.query;
+  var { telephone, type } = req.query;
 
-  const sendCode = require("../utils/sendCode");
+  if (type && type === "forget") {
+    var exist = await User.findByPhone(telephone);
+    console.log(exist);
+
+    if (!exist) {
+      res.json({
+        code: -2,
+        msg: "该手机号未注册过Inte账号",
+        data: null,
+      });
+      return;
+    }
+  }
+
   // 发送验证码
   let code = "";
   for (var i = 1; i <= 6; i++) {
     code += Math.floor(Math.random() * 10).toString();
   }
   req.session.code = code;
-  req.session.phone = phone;
+  req.session.telephone = telephone;
 
-  sendCode(phone, code).then(
+  sendCode(telephone, code).then(
     (response) => {
       let { Code } = response;
       if (Code === "OK") {
@@ -68,42 +83,72 @@ var telVerify = async (req, res, next) => {
       res.json({
         msg: "验证码发送失败：" + err,
         code: -1,
+        data: null,
       });
     }
   );
 };
 
 // 验证验证码
-var verifyCode = async (req, res, next) => { 
+var verifyCode = async (req, res, next) => {
   var { code } = req.body;
   if (code !== req.session.code) {
     res.json({
-      msg: "验证码错误",
       code: -1,
+      msg: "验证码输入不正确",
+      data: null,
     });
   } else {
     res.json({
-      msg: "验证码验证通过",
       code: 0,
+      msg: "验证码验证通过",
+      data: null,
     });
   }
 };
 
 // 注册控制
 var register = async (req, res, next) => {
-  var { username, phone, password } = req.body;
-
-  User.add(username, phone, password)
+  var { username, telephone, password } = req.body;
+  User.add(username, telephone, password)
     .then(() => {
       res.json({
-        msg: "注册成功",
         code: 0,
+        msg: "注册成功",
+        data: null,
       });
     })
     .catch((err) => {
       res.json({
-        msg: "注册失败: " + err.message,
         code: -2,
+        msg: "注册失败: " + err.message,
+        data: null,
+      });
+    });
+};
+
+const changePassword = async (req, res, next) => {
+  var { telephone, password } = req.body;
+  if (!telephone || !password) {
+    res.json({
+      code: -2,
+      msg: "手机号或者密码为空",
+      data: null,
+    });
+  }
+  User.changePassword(telephone, password)
+    .then(() => {
+      res.json({
+        code: 0,
+        msg: "密码修改成功",
+        data: null,
+      });
+    })
+    .catch((err) => {
+      res.json({
+        code: -1,
+        msg: "密码修改失败: " + err.message,
+        data: null,
       });
     });
 };
@@ -113,4 +158,5 @@ module.exports = {
   register,
   telVerify,
   verifyCode,
+  changePassword,
 };

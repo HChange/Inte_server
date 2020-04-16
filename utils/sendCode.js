@@ -4,8 +4,8 @@ const SMSClient = require('@alicloud/sms-sdk')
 const {ACCESS_KEY_ID,ACCESS_KEY_SECRET,SMS_TEMPLATE_CODE,SIGN_NAME} = require('../config/secret_key')
 //初始化sms_client
 let smsClient = new SMSClient({
-  ACCESS_KEY_ID,
-  ACCESS_KEY_SECRET,
+  accessKeyId: ACCESS_KEY_ID,
+  secretAccessKey: ACCESS_KEY_SECRET,
 });
 // 随机生成验证码
 

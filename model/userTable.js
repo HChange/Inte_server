@@ -38,19 +38,27 @@ const User = mongoose.model(
       type: String,
       default: "/assets/icon.png",
     },
+    qq:{
+      type:String,
+      required:false
+    },
+    wechat:{
+      type:String,
+      required:false
+    }
   })
 );
 
 // 注册用户
 module.exports.add = async (username, telephone, password) => {
-  var result1 = await User.findOne({
-    username,
-  });
+  // var result1 = await User.findOne({
+  //   username,
+  // });
   var result2 = await User.findOne({
     telephone,
   });
-  if (result1 || result2) {
-    throw new Error("该账号已存在");
+  if (result2) {
+    throw new Error("该手机号已经注册过Inte账号");
   } else {
     // 创建
     const user = new User({
@@ -64,9 +72,9 @@ module.exports.add = async (username, telephone, password) => {
 };
 
 // 查询
-module.exports.findByPhone = async (Phone) => {
+module.exports.findByPhone = async (telephone) => {
   return await User.findOne({
-    Phone,
+    telephone,
   });
 };
 
@@ -76,10 +84,16 @@ module.exports.findByUsername = async (username) => {
   });
 };
 
-module.exports.findByPhoneAndPsd = async (phone, password) => {
+module.exports.findByPhoneAndPsd = async (telephone, password) => {
   return await User.findOne({
-    phone,
+    telephone,
     password,
   });
 };
 
+//修改密码
+module.exports.changePassword = async (telephone, password) => {
+  return User.updateOne({telephone}, {
+    password,
+  });
+};
