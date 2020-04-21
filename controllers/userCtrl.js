@@ -17,6 +17,7 @@ const login = async (req, res, next) => {
       .then((result) => {
         if (result) {
           req.session.userInfo = result;
+          req.session.telephone = telephone;
           const deletePassword = { ...result._doc, password: "********" };
           res.json({
             code: 0,
@@ -46,10 +47,8 @@ const login = async (req, res, next) => {
 var telVerify = async (req, res, next) => {
   var { telephone, type } = req.query;
 
+  var exist = await User.findByPhone(telephone);
   if (type && type === "forget") {
-    var exist = await User.findByPhone(telephone);
-    console.log(exist);
-
     if (!exist) {
       res.json({
         code: -2,
@@ -58,13 +57,23 @@ var telVerify = async (req, res, next) => {
       });
       return;
     }
+  } else {
+    if (exist) {
+      res.json({
+        code: -2,
+        msg: "该手机号已经注册过Inte账号",
+        data: null,
+      });
+      return;
+    }
   }
 
   // 发送验证码
-  let code = "";
+  let code = [];
   for (var i = 1; i <= 6; i++) {
-    code += Math.floor(Math.random() * 10).toString();
+    code.push(Math.ceil(Math.random() * 8.9));
   }
+  code = code.join("");
   req.session.code = code;
   req.session.telephone = telephone;
 
@@ -127,6 +136,7 @@ var register = async (req, res, next) => {
     });
 };
 
+/**修改密码 */
 const changePassword = async (req, res, next) => {
   var { telephone, password } = req.body;
   if (!telephone || !password) {
@@ -153,10 +163,102 @@ const changePassword = async (req, res, next) => {
     });
 };
 
+// 登录是否过期
+var checkLogin = async (req, res) => {
+  if (req.session.userInfo && req.session.userInfo.telephone) {
+    res.json({
+      code: 0,
+      msg: "登录没有过期",
+      data: req.session.userInfo,
+    });
+  } else {
+    res.json({
+      code: -1,
+      msg: "登录过期，请重新登录",
+    });
+  }
+};
+
+var logout = async (req, res) => {
+  delete req.session.userInfo;
+  res.json({
+    code: 0,
+    msg: "退出登录成功",
+  });
+};
+
+/**设置个性签名 */
+const setSign = async (req, res, next) => {
+  var { sign } = req.query;
+  const telephone = req.session.telephone;
+  User.setSign(telephone, sign)
+    .then(() => {
+      res.json({
+        code: 0,
+        msg: "签名设置成功",
+        data: null,
+      });
+    })
+    .catch((err) => {
+      res.json({
+        code: -1,
+        msg: "签名设置失败: " + err.message,
+        data: null,
+      });
+    });
+};
+/**设置用户信息 */
+const setUserInfo = async (req, res, next) => {
+  var { userInfo } = req.body;
+  const telephone = req.session.telephone;
+  User.setuserInfo(telephone, userInfo)
+    .then(async () => {
+      let newUserInfo = await User.findByPhone(telephone);
+      res.json({
+        code: 0,
+        msg: "个人信息修改成功",
+        data: newUserInfo,
+      });
+    })
+    .catch((err) => {
+      res.json({
+        code: -1,
+        msg: "个人信息修改失败: " + err.message,
+        data: null,
+      });
+    });
+};
+/**设置个性签名 */
+const getUserInfo = async (req, res, next) => {
+  const telephone = req.session.telephone;
+  User.findByPhone(telephone)
+    .then((data) => {
+      res.json({
+        code: 0,
+        msg: "获取用户信息成功",
+        data: data,
+      });
+    })
+    .catch((err) => {
+      res.json({
+        code: -1,
+        msg: "获取用户信息失败: " + err.message,
+        data: null,
+      });
+    });
+};
+
+
+/**发表帖子 */
 module.exports = {
   login,
   register,
   telVerify,
   verifyCode,
   changePassword,
+  checkLogin,
+  logout,
+  setSign,
+  getUserInfo,
+  setUserInfo,
 };

@@ -26,7 +26,7 @@ const User = mongoose.model(
       type: String,
       required: false,
     },
-    sexID: {
+    sex: {
       type: String,
       default: "男",
     },
@@ -38,14 +38,30 @@ const User = mongoose.model(
       type: String,
       default: "/assets/icon.png",
     },
-    qq:{
-      type:String,
-      required:false
+    qq: {
+      type: String,
+      required: false,
     },
-    wechat:{
-      type:String,
-      required:false
-    }
+    wechat: {
+      type: String,
+      required: false,
+    },
+    sign: {
+      type: String,
+      required: false,
+    },
+    website: {
+      type: String,
+      required: false,
+    },
+    blog: {
+      type: String,
+      required: false,
+    },
+    realName: {
+      type: String,
+      required: false,
+    },
   })
 );
 
@@ -96,4 +112,16 @@ module.exports.changePassword = async (telephone, password) => {
   return User.updateOne({telephone}, {
     password,
   });
+};
+//设置个性签名
+module.exports.setSign = async (telephone, sign) => {
+  return User.updateOne({telephone}, {
+    sign,
+  });
+};
+
+// 设置信息
+
+module.exports.setuserInfo = async (telephone, newUserInfo) => {
+  return User.updateOne({ telephone }, newUserInfo);
 };

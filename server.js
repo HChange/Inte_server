@@ -3,6 +3,11 @@ var colors = require("colors");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const userRouter = require('./routes/userRouter');
+const likeRouter = require('./routes/likeRouter');
+const collectionRouter = require('./routes/collectionRouter');
+const replyRouter = require('./routes/replyRouter');
+const followRouter = require('./routes/followRouter');
+const postRouter = require('./routes/postRouter');
 const MongoDBStore = require("connect-mongodb-session")(session);
 const { PORT, DB_PATH, SESSIONID ,MAXAGE} = require("./config/index");
 const server = express();
@@ -35,6 +40,11 @@ server.use(
 
 
 server.use("/api/users", userRouter);
+server.use("/api/posts", postRouter);
+server.use("/api/likes", likeRouter);
+server.use("/api/follows", followRouter);
+server.use("/api/replys", replyRouter);
+server.use("/api/collections", collectionRouter);
 
 
 /**
