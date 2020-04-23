@@ -54,8 +54,8 @@ const deleteCollection = async (req, res, next) => {
 };
 
 const getCollectionCount = async (req, res, next) => {
-  let { telephone } = req.query;
-  const count = await Collection.getCollectionCount(telephone);
+  let { userId } = req.query;
+  const count = await Collection.getCollectionCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -63,9 +63,9 @@ const getCollectionCount = async (req, res, next) => {
   });
 };
 const getCollectionList = async (req, res, next) => {
-  let { telephone, pageNum, pageSize } = req.query;
-  const result = await Collection.getCollectionList(telephone, pageNum, pageSize);
-  const count = await Collection.getCollectionCount(telephone);
+  let { userId, pageNum, pageSize } = req.query;
+  const result = await Collection.getCollectionList(userId, pageNum, pageSize);
+  const count = await Collection.getCollectionCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",

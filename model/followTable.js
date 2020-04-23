@@ -4,20 +4,14 @@ const mongoose = require("mongoose");
 
 // 创建表
 let followSchema = new mongoose.Schema({
-  userTelephone: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
     required: true,
   },
-  username: {
-    type: String,
-    required: true,
-  },
-  telephone: {
-    type: String,
-    required: true,
-  },
-  icon: {
-    type: String,
+  myUserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
     required: true,
   },
   time: {
@@ -41,17 +35,18 @@ module.exports.deleteFollow = async (_id) => {
 };
 
 // 数据总数
-module.exports.getFollowCount = async (userTelephone) => {
+module.exports.getFollowCount = async (userId) => {
   return await Follow.find({
-    userTelephone: userTelephone,
+    userId: userId,
   }).countDocuments();
 };
 
 // 数据列表
-module.exports.getFollowList = async (userTelephone, pageNum, pageSize) => {
+module.exports.getFollowList = async (userId, pageNum, pageSize) => {
   return await Follow.find({
-    userTelephone: userTelephone,
+    userId: userId,
   })
+    .populate("myUserId")
     .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
     .sort({ time: -1 });
@@ -59,17 +54,18 @@ module.exports.getFollowList = async (userTelephone, pageNum, pageSize) => {
 
 /**我关注的列表 */
 // 数据总数
-module.exports.getMyFollowCount = async (telephone) => {
+module.exports.getMyFollowCount = async (myUserId) => {
   return await Follow.find({
-    telephone: telephone,
+    myUserId: myUserId,
   }).countDocuments();
 };
 
 // 数据列表
-module.exports.getMyFollowList = async (telephone, pageNum, pageSize) => {
+module.exports.getMyFollowList = async (myUserId, pageNum, pageSize) => {
   return await Follow.find({
-    telephone: telephone,
+    myUserId: myUserId,
   })
+    .populate("userId")
     .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
     .sort({ time: -1 });

@@ -4,15 +4,12 @@ const mongoose = require("mongoose");
 
 // 创建表
 let postSchema = new mongoose.Schema({
-  username: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
     required: true,
   },
   telephone: {
-    type: String,
-    required: true,
-  },
-  icon: {
     type: String,
     required: true,
   },
@@ -44,13 +41,14 @@ module.exports.add = async (postInfo) => {
 };
 
 // 查询一个人的全部帖子
-module.exports.getUserAllPost = async (telephone, pageNum, pageSize) => {
+module.exports.getUserAllPost = async (userId, pageNum, pageSize) => {
   return await Post.find({
-    telephone,
+    userId,
   })
-    .skip((pageNum-1) * pageSize)
+    .populate("userId")
+    .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
-    .sort({time: -1 });
+    .sort({ time: -1 });
 };
 
 // 模糊查询帖子
@@ -59,18 +57,19 @@ module.exports.getUserFuzzyPost = async (name, pageNum, pageSize) => {
   return await Post.find({
     $or: [{ desc: query }],
   })
-    .skip((pageNum-1) * pageSize)
+    .populate("userId")
+    .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
     .sort({ time: -1 });
 };
 
 // 数据总数
-module.exports.getPostCount = async(keyword,type)=>{
-  if(type==="all"){
+module.exports.getPostCount = async (keyword, type) => {
+  if (type === "all") {
     return await Post.find({
       telephone: keyword,
     }).countDocuments();
-  }else if(type==="fuzzy"){
+  } else if (type === "fuzzy") {
     let query = new RegExp(keyword, "i");
     return await Post.find({
       $or: [{ desc: query }],
@@ -78,9 +77,8 @@ module.exports.getPostCount = async(keyword,type)=>{
   }
 };
 module.exports.getPostById = async (_id) => {
-  return Post.findOne(_id);
+  return Post.findOne(_id).populate("userId");
 };
 module.exports.deletePost = async (_id) => {
   return Post.deleteOne({ _id });
 };
-

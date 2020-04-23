@@ -28,6 +28,8 @@ const addLike = async (req, res, next) => {
 };
 const deleteLike = async (req, res, next) => {
     let {_id} = req.body;
+    console.log(_id);
+    
     Like.deleteLike(_id)
       .then((result) => {
         if (result) {
@@ -55,8 +57,8 @@ const deleteLike = async (req, res, next) => {
 
 
 const getLikeCount = async (req, res, next) => {
-  let { _id } = req.query;
-  const count = await Like.getLikeCount(_id);
+  let { postId } = req.query;
+  const count = await Like.getLikeCount(postId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -64,9 +66,9 @@ const getLikeCount = async (req, res, next) => {
   });
 };
 const getLikeList = async (req, res, next) => {
-  let { _id, pageNum, pageSize } = req.query;
-    const result = await Like.getLikeList(_id, pageNum, pageSize);
-  const count = await Like.getLikeCount(_id);
+  let { postId, pageNum, pageSize } = req.query;
+    const result = await Like.getLikeList(postId, pageNum, pageSize);
+  const count = await Like.getLikeCount(postId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -74,8 +76,8 @@ const getLikeList = async (req, res, next) => {
   });
 };
 const getMyLikeCount = async (req, res, next) => {
-  let { telephone } = req.query;
-  const count = await Like.getMyLikeCount(telephone);
+  let { userId } = req.query;
+  const count = await Like.getMyLikeCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -83,9 +85,9 @@ const getMyLikeCount = async (req, res, next) => {
   });
 };
 const getMyLikeList = async (req, res, next) => {
-  let { telephone, pageNum, pageSize } = req.query;
-    const result = await Like.getMyLikeList(telephone, pageNum, pageSize);
-  const count = await Like.getMyLikeCount(telephone);
+  let { userId, pageNum, pageSize } = req.query;
+    const result = await Like.getMyLikeList(userId, pageNum, pageSize);
+  const count = await Like.getMyLikeCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",

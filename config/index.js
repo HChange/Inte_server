@@ -7,4 +7,7 @@ module.exports = {
   SESSIONID: "session_id",
   /**保存时间 */
   MAXAGE: 30 * 24 * 60 * 60000,
+  /**图片上传服务器端口 */
+  UPLOADPORT: 8099
+
 };

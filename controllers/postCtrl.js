@@ -27,9 +27,9 @@ const publishPost = async (req, res, next) => {
     });
 };
 const getUserAllPost = async (req, res, next) => {
-  let { telephone, pageNum, pageSize } = req.query;
-  const count = await Post.getPostCount(telephone, "all");
-  Post.getUserAllPost(telephone, +pageNum, +pageSize)
+  let {userId,pageNum, pageSize } = req.query;
+  const count = await Post.getPostCount( userId , "all");
+  Post.getUserAllPost(userId, +pageNum, +pageSize)
     .then((result) => {
       if (result) {
         res.json({
@@ -82,8 +82,8 @@ const getPost = async (req, res, next) => {
 };
 /**查询通过id */
 const getPostById = async (req, res, next) => {
-  let { _id } = req.body;
-  Post.getPostById(_id)
+  let { postId } = req.body;
+  Post.getPostById(postId)
     .then((result) => {
       if (result) {
         res.json({
@@ -120,8 +120,8 @@ const getPostCount = async (req, res, next) => {
 }
 // delete
 const deletePost = async (req, res, next) => {
-  let { _id } = req.body;
-  Post.deletePost(_id)
+  let { postId } = req.body;
+  Post.deletePost(postId)
     .then((result) => {
       if (result) {
         res.json({

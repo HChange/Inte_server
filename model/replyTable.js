@@ -5,20 +5,12 @@ const mongoose = require("mongoose");
 // 创建表
 let replySchema = new mongoose.Schema({
   postId: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "post",
   },
-  username: {
-    type: String,
-    required: true,
-  },
-  telephone: {
-    type: String,
-    required: true,
-  },
-  icon: {
-    type: String,
-    required: true,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
   },
   time: {
     type: Date,
@@ -56,23 +48,27 @@ module.exports.getReplyList = async (postId, pageNum, pageSize) => {
   return await Reply.find({
     postId: postId,
   })
+    .populate("userId")
+    .populate("postId")
     .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
     .sort({ time: -1 });
 };
 
 // 数据总数
-module.exports.getMyReplyCount = async (telephone) => {
+module.exports.getMyReplyCount = async (userId) => {
   return await Reply.find({
-    telephone: telephone,
+    userId: userId,
   }).countDocuments();
 };
 
 // 数据列表
-module.exports.getMyReplyList = async (telephone, pageNum, pageSize) => {
+module.exports.getMyReplyList = async (userId, pageNum, pageSize) => {
   return await Reply.find({
-    telephone: telephone,
+    userId: userId,
   })
+    .populate("userId")
+    .populate("postId")
     .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
     .sort({ time: -1 });

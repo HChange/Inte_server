@@ -74,8 +74,8 @@ const getReplyList = async (req, res, next) => {
   });
 };
 const getMyReplyCount = async (req, res, next) => {
-  let { telephone } = req.query;
-  const count = await Reply.getMyReplyCount(telephone);
+  let { userId } = req.query;
+  const count = await Reply.getMyReplyCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -83,9 +83,9 @@ const getMyReplyCount = async (req, res, next) => {
   });
 };
 const getMyReplyList = async (req, res, next) => {
-  let { telephone, pageNum, pageSize } = req.query;
-    const result = await Reply.getMyReplyList(telephone, pageNum, pageSize);
-  const count = await Reply.getMyReplyCount(telephone);
+  let { userId, pageNum, pageSize } = req.query;
+    const result = await Reply.getMyReplyList(userId, pageNum, pageSize);
+  const count = await Reply.getMyReplyCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",

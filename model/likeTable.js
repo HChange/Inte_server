@@ -5,19 +5,13 @@ const mongoose = require("mongoose");
 // 创建表
 let likeSchema = new mongoose.Schema({
   postId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
     required: true,
   },
-  username: {
-    type: String,
-    required: true,
-  },
-  telephone: {
-    type: String,
-    required: true,
-  },
-  icon: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
     required: true,
   },
   time: {
@@ -53,6 +47,7 @@ module.exports.getLikeList = async (postId,pageNum,pageSize) => {
   return await Like.find({
     postId: postId,
   })
+    .populate("userId")
     .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
     .sort({ time: -1 });
@@ -60,17 +55,19 @@ module.exports.getLikeList = async (postId,pageNum,pageSize) => {
 
 /**自己点赞的数据 */
 // 数据总数
-module.exports.getMyLikeCount = async (telephone) => {
+module.exports.getMyLikeCount = async (userId) => {
     return await Like.find({
-      telephone: telephone,
+      userId: userId,
     }).countDocuments();
 };
 
 // 数据数据
-module.exports.getMyLikeList = async (telephone,pageNum,pageSize) => {
+module.exports.getMyLikeList = async (userId,pageNum,pageSize) => {
   return await Like.find({
-    telephone: telephone,
+    userId: userId,
   })
+    .populate("userId")
+    .populate("postId")
     .skip((pageNum - 1) * pageSize)
     .limit(+pageSize)
     .sort({ time: -1 });

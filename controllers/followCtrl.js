@@ -54,8 +54,8 @@ const deleteFollow = async (req, res, next) => {
 };
 
 const getFollowCount = async (req, res, next) => {
-  let { userTelephone } = req.query;
-  const count = await Follow.getFollowCount(userTelephone);
+  let { userId } = req.query;
+  const count = await Follow.getFollowCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -63,9 +63,9 @@ const getFollowCount = async (req, res, next) => {
   });
 };
 const getFollowList = async (req, res, next) => {
-  let { userTelephone, pageNum, pageSize } = req.query;
-  const result = await Follow.getFollowList(userTelephone, pageNum, pageSize);
-  const count = await Follow.getFollowCount(userTelephone);
+  let { userId, pageNum, pageSize } = req.query;
+  const result = await Follow.getFollowList(userId, pageNum, pageSize);
+  const count = await Follow.getFollowCount(userId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -73,8 +73,8 @@ const getFollowList = async (req, res, next) => {
   });
 };
 const getMyFollowCount = async (req, res, next) => {
-  let { telephone } = req.query;
-  const count = await Follow.getMyFollowCount(telephone);
+  let { myUserId } = req.query;
+  const count = await Follow.getMyFollowCount(myUserId);
   res.json({
     code: 0,
     msg: "查询成功",
@@ -82,9 +82,9 @@ const getMyFollowCount = async (req, res, next) => {
   });
 };
 const getMyFollowList = async (req, res, next) => {
-  let { telephone, pageNum, pageSize } = req.query;
-  const result = await Follow.getMyFollowList(telephone, pageNum, pageSize);
-  const count = await Follow.getMyFollowCount(telephone);
+  let { myUserId, pageNum, pageSize } = req.query;
+  const result = await Follow.getMyFollowList(myUserId, pageNum, pageSize);
+  const count = await Follow.getMyFollowCount(myUserId);
   res.json({
     code: 0,
     msg: "查询成功",
