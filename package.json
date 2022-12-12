@@ -6,7 +6,7 @@
   "dependencies": {
     "@alicloud/sms-sdk": "^1.1.6",
     "connect-mongodb-session": "^2.3.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.0",
     "mongoose": "^5.9.9",
     "multer": "^1.4.2"
